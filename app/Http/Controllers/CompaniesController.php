@@ -16,29 +16,73 @@ class CompaniesController extends Controller
         //
     }
 
-    /**
-     * Return all companies
-     */
-    public function showAllCompanies(){
-
-        $companies = Company::all();
-        
-        return json_encode($companies);
+    public function index()
+    {
+        return response()->json(Company::all(), 200);
     }
 
-    public function getCompanyById($id){
-        // $company = Company::getById($id);
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'description' => 'required'
+        ]);
 
+        $company = Company::create($request->all());
+        return response()->json($company, 201);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        return response()->json(Company::find($id), 200);       
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
         $company = Company::find($id);
 
+        $company->name = $request->input('name');
+        $company->description = $request->input('description');
+        $company->save();
 
-        // return json_encode($company);
+        return response()->json($company, 200);
     }
 
-    public function getCompanyByType($type){
-        echo 2;
-        $companies = Company::where('type',$type)->get();
-
-        // return json_encode($companies);
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        Company::find($id)->delete();
+        return response('The company has been deleted succesfully!', 200);
     }
+
+    public function employees($id)
+    {
+        $company = Company::find($id);        
+        return response()->json($company->showAllEmployees(), 200);
+    }
+   
 }

@@ -15,16 +15,13 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get('/keygen', function() {
-    echo str_random(32);
-});
+$router->get('/companies', 'CompaniesController@index');	
+$router->get('/companies/{id}/employees', 'CompaniesController@employees');	
+$router->post('/companies', 'CompaniesController@store');
+$router->get('/companies/{id}', 'CompaniesController@show');
+$router->put('/companies/{id}', 'CompaniesController@update');
+$router->delete('/companies/{id}', 'CompaniesController@destroy');
 
-
-$router->get('/companies', 'CompaniesController@showAllCompanies');
-$router->get('/companies/{id}', 'CompaniesController@getCompanyById');
-
-$router->get('/companies/types/{type}', 'CompaniesController@getCompanyByType');
-
-$router->get('/employees','EmployeesController@showAllEmployees');
-$router->get('/employees/{id}', 'EmployeesController@showEmployeeById');
-$router->get('/employees?job={job}', 'EmployeesController@showEmployeeByJob');
+$router->delete('/employees/{id}', 'EmployeesController@destroy');
+$router->post('/employees', 'EmployeesController@store');
+$router->put('/employees/{id}', 'EmployeesController@update');

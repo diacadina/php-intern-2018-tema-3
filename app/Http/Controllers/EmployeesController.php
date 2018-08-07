@@ -15,25 +15,66 @@ class EmployeesController extends Controller
     {
         //
     }
-
-    // Return all employees
-    public function showAllEmployees(){
-        $employees = Employee::all();
-
-        return json_encode($employees);
+    public function index()
+    {
+        return response()->json(Employee::all(), 200);
     }
 
-    //Return employee by id
-    public function showEmployeeById($id){
-        $employee = Employee::find($id);
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'company_id' => 'required'
+        ]);
 
-        return json_encode($employee);
+        $employee = Employee::create($request->all());
+        return response()->json($employee, 201);
     }
 
-    //Return employees by type
-    public function showEmployeeByJob(Request $request){
-        $employees = Employee::where('job', $job)->get();
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        return response()->json(Employee::find($id), 200);       
+    }
 
-        return json_encode($employees);
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $empoyee = Employee::find($id);
+
+        $empoyee->name = $request->input('name');
+        $empoyee->company_id = $request->input('company_id');
+        $empoyee->save();
+
+        return response()->json($empoyee, 200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        Employee::find($id)->delete();
+        return response('The employee has been deleted!', 200);
     }
 }
